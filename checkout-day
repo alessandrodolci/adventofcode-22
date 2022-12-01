@@ -14,7 +14,7 @@ parser.add_argument("day",
                     )
 args = parser.parse_args()
 
-dir_name = "day" + str(args.day[0])
+dir_name = os.path.join("day" + str(args.day[0]), "input")
 try:
     os.makedirs(dir_name)
 except FileExistsError:
