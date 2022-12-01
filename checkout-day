@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import requests
+
+parser = argparse.ArgumentParser(
+    description="Initialize the given day, creating a new directory and fetching the relative input."
+)
+parser.add_argument("day",
+                    help="Number of day to checkout",
+                    nargs=1,
+                    type=int
+                    )
+args = parser.parse_args()
+
+dir_name = "day" + str(args.day[0])
+try:
+    os.makedirs(dir_name)
+except FileExistsError:
+    print("Day already initialized, exit...")
+    exit(1)
+
+input_url = "https://adventofcode.com/2022/day/" + str(args.day[0]) + "/input"
+headers = {
+    "User-Agent": "https://github.com/alessandrodolci/adventofcode-22 by alessandro.dolci@pm.me"
+}
+cookies = requests.cookies.RequestsCookieJar()
+with open("session-token.txt", "r") as session_token_file:
+    cookies.set("session", session_token_file.readline())
+local_file_name = os.path.join(dir_name, 'input.txt')
+with requests.get(input_url, headers=headers, cookies=cookies) as input_file:
+    with open(local_file_name, 'w') as local_file:
+        local_file.write(input_file.text)
